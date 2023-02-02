@@ -18,7 +18,9 @@
         {% for quote in quotes %}
         <tr>
             <td>{{ quote.supplier }}</td>
+            <td>{{ quote.datecode }}</td>
             <td>{{ quote.price }}</td>
+            <td>{{ quote.created_at }}</td>
         </tr>
         {% endfor %}
     </tbody>
