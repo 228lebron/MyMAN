@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{% block title %}Part List{% endblock %}</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Number</th>
+                <th>Series</th>
+                <th>Manufacturer</th>
+                <th>Digikey Link</th>
+                <th>Manufacturer Link</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for part in parts %}
+                <tr>
+                    <td><a href="{% url 'parts:part_detail' part.id %}">{{ part.number }}</a></td>
+                    <td>{{ part.series }}</td>
+                    <td>{{ part.manufacturer }}</td>
+                    <td><a href="{{ part.digikey_link }}">{{ part.digikey_link }}</a></td>
+                    <td><a href="{{ part.manufacturer_link }}">{{ part.manufacturer_link }}</a></td>
+                    <td>
+                        <a href="{% url 'parts:part_update' part.id %}">Edit</a> |
+                        <a href="{% url 'parts:part_delete' part.id %}">Delete</a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+<h2>aaaaaaaaaaa</h2>
+    <a href="{% url 'parts:part_create' %}">Create a new part</a>
+{% endblock %}

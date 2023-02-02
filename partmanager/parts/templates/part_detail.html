@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>{{ object.number }} - {{ object.series }}</h1>
+<p>Manufacturer: {{ object.manufacturer }}</p>
+<p>Link to Digikey: <a href="{{ object.link_to_digikey }}">{{ object.digikey_link }}</a></p>
+<p>Link to Manufacturer page: <a href="{{ object.link_to_manufacturer }}">{{ object.manufacturer_link }}</a></p>
+
+<h2>Quotes</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Supplier</th>
+            <th>Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for quote in quotes %}
+        <tr>
+            <td>{{ quote.supplier }}</td>
+            <td>{{ quote.price }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
