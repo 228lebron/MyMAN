@@ -17,8 +17,11 @@ class Request(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    final_ruble_price = models.PositiveIntegerField(blank=True, null=True)
+
+
     def __str__(self):
-        return f"Request for part {self.part}"
+        return f"{self.part} {self.quantity} {self.created_at}"
 
 class Quote(models.Model):
     part = models.ForeignKey(Part, on_delete=models.CASCADE)
@@ -30,13 +33,16 @@ class Quote(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     def __str__(self):
-        return f"Quote for part {self.part}"
+        return f"{self.part} {self.price} {self.datecode} {self.quantity} {self.created_at}"
 
 class Order(models.Model):
-    parts = models.ManyToManyField(Part)
     quotes = models.ManyToManyField(Quote)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Order for parts {self.parts.all()}"
+        parts_in_quotes = {}
+        for part in self.quotes.all():
+            parts_in_quotes['part'] = part.part.number
+            parts_in_quotes['price'] = part.price
+            return f"{parts_in_quotes}"

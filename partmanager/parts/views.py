@@ -3,6 +3,8 @@ from django.views.generic import ListView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Max, Value
+from django.utils import timezone
 from .models import Part, Request, Quote, Order
 
 
@@ -19,6 +21,10 @@ class PartListView(LoginRequiredMixin, ListView):
     model = Part
     template_name = 'part_list.html'
     context_object_name = 'parts'
+    def get_queryset(self):
+        parts = super().get_queryset()
+        parts = parts.annotate(last_quote_date=Max('quote__created_at'))
+        return parts
 
 class PartCreateView(LoginRequiredMixin, CreateView):
     model = Part

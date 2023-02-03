@@ -11,16 +11,22 @@
     <thead>
         <tr>
             <th>Supplier</th>
-            <th>Price</th>
+            <th>QTY</th>
+            <th>D/C</th>
+            <th>U/P(USD)</th>
+            <th>L/T</th>
+            <th>Date</th>
         </tr>
     </thead>
     <tbody>
         {% for quote in quotes %}
         <tr>
             <td>{{ quote.supplier }}</td>
+            <td>{{ quote.quantity }}</td>
             <td>{{ quote.datecode }}</td>
             <td>{{ quote.price }}</td>
-            <td>{{ quote.created_at }}</td>
+            <td>{{ quote.lead_time }}</td>
+            <td>{{ quote.created_at|date:"d-m-Y H:i" }}</td>
         </tr>
         {% endfor %}
     </tbody>

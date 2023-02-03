@@ -2,23 +2,23 @@
 
 {% block content %}
 <h1>Requests List</h1>
-
+<a href="{% url 'parts:request_create' %}">Create a new request</a>
 <table>
   <thead>
     <tr>
       <th>ID</th>
       <th>Part</th>
-      <th>Date</th>
       <th>Quantity</th>
+      <th>Request date</th>
     </tr>
   </thead>
   <tbody>
     {% for request in object_list %}
     <tr>
       <td>{{ request.id }}</td>
-      <td><a href="{% url 'part_detail' request.part.id %}">{{ request.part.number }}</a></td>
-      <td>{{ request.date }}</td>
+      <td><a href="{% url 'parts:part_detail' request.part.id %}">{{ request.part.number }}</a></td>
       <td>{{ request.quantity }}</td>
+      <td>{{ request.created_at|date:"d-m-Y H:i" }}</td>
     </tr>
     {% endfor %}
   </tbody>
