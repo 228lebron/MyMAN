@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  td,
+th {
+    border: 1px solid rgb(190, 190, 190);
+    padding: 10px;
+}
+
+td {
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #eee;
+}
+
+th[scope='col'] {
+    background-color: #696969;
+    color: #fff;
+}
+
+th[scope='row'] {
+    background-color: #d7d9f2;
+}
+
+caption {
+    padding: 10px;
+    caption-side: bottom;
+}
+
+table {
+    border-collapse: collapse;
+    border: 2px solid rgb(200, 200, 200);
+    letter-spacing: 1px;
+    font-family: sans-serif;
+    font-size: 0.8rem;
+}
+</style>
+<table>
+  <tr>
+    <th>Request Part Number</th>
+    <th>Request Brand</th>
+    <th>Request Quantity</th>
+    <th>Request Date</th>
+    <th>Quota Part Number</th>
+    <th>Quota Brand</th>
+    <th>Quota Quantity</th>
+    <th>Quota Price</th>
+    <th>Quota Supplier</th>
+    <th>Quota Date</th>
+  </tr>
+  {% for req, quo in results %}
+    <tr>
+      <td>{{ req.part_number.number }}</td>
+      <td>{{ req.brand }}</td>
+      <td>{{ req.quantity }}</td>
+      <td>{{ req.date }}</td>
+      {% if quo %}
+      <td>{{ quo.part_number.number }}</td>
+      <td>{{ quo.brand }}</td>
+      <td>{{ quo.quantity }}</td>
+      <td>{{ quo.price }}</td>
+      <td>{{ quo.supplier }}</td>
+      <td>{{ quo.date }}</td>
+      {% else %}
+      <td colspan="7">Нет квот на позицию</td>
+      {% endif %}
+    </tr>
+  {% endfor %}
+</table>
+{% endblock %}
