@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<style>
+<style xmlns="http://www.w3.org/1999/html">
   td,
 th {
     border: 1px solid rgb(190, 190, 190);
@@ -38,36 +37,45 @@ table {
     font-size: 0.8rem;
 }
 </style>
+
+<input type="text" list="parts" placeholder="Part" class="form-control">
+<datalist id="parts">
+  {% for part in parts %}
+  <option value="{{ part.number }}">{{ part.brand }}</option>
+  {% endfor %}
+</datalist>
+
+<form method="get">
+  {{ filter.form }}
+  <button type="submit">Поиск</button>
+</form>
+
 <table>
   <tr>
-    <th>Request Part Number</th>
-    <th>Request Brand</th>
+    <th>Part Series</th>
+    <th>Part Number</th>
+    <th>Part Brand</th>
     <th>Request Quantity</th>
     <th>Request Date</th>
-    <th>Quota Part Number</th>
-    <th>Quota Brand</th>
+    <th>Quota Number</th>
     <th>Quota Quantity</th>
     <th>Quota Price</th>
     <th>Quota Supplier</th>
     <th>Quota Date</th>
   </tr>
-  {% for req, quo in results %}
-    <tr>
-      <td>{{ req.part_number.number }}</td>
-      <td>{{ req.brand }}</td>
-      <td>{{ req.quantity }}</td>
-      <td>{{ req.date }}</td>
-      {% if quo %}
-      <td>{{ quo.part_number.number }}</td>
-      <td>{{ quo.brand }}</td>
-      <td>{{ quo.quantity }}</td>
-      <td>{{ quo.price }}</td>
-      <td>{{ quo.supplier }}</td>
-      <td>{{ quo.date }}</td>
-      {% else %}
-      <td colspan="7">Нет квот на позицию</td>
-      {% endif %}
-    </tr>
+  {% for item in result %}
+  <tr>
+    <td>{{ item.request.part_number.series }}</td>
+    <td>{{ item.request.part_number.number }}</td>
+    <td>{{ item.request.part_number.brand }}</td>
+    <td>{{ item.request.quantity }}</td>
+    <td>{{ item.request.date }}</td>
+    <td>{{ item.quota.part_number.number }}</td>
+    <td>{{ item.quota.quantity }}</td>
+    <td>{{ item.quota.price }}</td>
+    <td>{{ item.quota.supplier }}</td>
+    <td>{{ item.quota.date }}</td>
+  </tr>
   {% endfor %}
 </table>
 {% endblock %}

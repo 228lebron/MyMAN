@@ -5,9 +5,9 @@ from . import views
 app_name = 'parts'
 
 urlpatterns = [
-    path('quotas_on_req/', views.requests_and_quotas, name='requests_and_quotas')
-    #path('part/<int:pk>/', views.PartDetailView.as_view(), name='part_detail'),
-    #path('part/list/', views.PartListView.as_view(), name='part_list'),
+    path('', views.requests_and_quotas, name='requests_and_quotas'),
+    #path('part/<int:pk>/', views.part_detail, name='part_detail'),
+    #path('parts/', views.parts_list, name='parts_list'),
     #path('part/create/', views.PartCreateView.as_view(), name='part_create'),
     #path('part/update/<int:pk>/', views.PartUpdateView.as_view(), name='part_update'),
     #path('part/delete/<int:pk>/', views.PartDeleteView.as_view(), name='part_delete'),
