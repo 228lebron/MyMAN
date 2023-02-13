@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h1>Part Detail</h1>
+  <ul>
+    <li>Series: {{ part.series }}</li>
+    <li>Number: {{ part.number }}</li>
+    <li>Brand: {{ part.brand }}</li>
+    <li>Total Requests: {{ total_requests }}</li>
+    <li>Last Quota date: {% if last_quota_date %}{{ last_quota_date }}{% else %}N/A{% endif %}</li>
+    <li>Last Price: {% if last_price %}{{ last_price }}{% else %}N/A{% endif %}</li>
+  </ul>
+{% endblock %}

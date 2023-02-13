@@ -1,16 +1,12 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Menu</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'parts:part_list' %}">Детали</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'parts:request_list' %}">Запросы</a>
-      </li>
+<header>
+  <nav>
+    <ul>
+      <li><a href="{% url 'parts:part_list' %}">Детали</a></li>
+      <li><a href="{% url 'parts:quota_list' %}">Квоты</a></li>
+      <li><a href="{% url 'parts:request_list' %}">Запросы</a></li>
+      <li><a href="{% url 'parts:requests_and_quotas' %}">Requests and Quotas</a></li>
+      <li><a href="{% url 'parts:upload_quotas' %}">Upload Quotas</a></li>
+      <li><a href="{% url 'parts:responses' %}">Sale manager view</a></li>
     </ul>
-  </div>
-</nav>
+  </nav>
+</header>

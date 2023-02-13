@@ -37,7 +37,7 @@ table {
     font-size: 0.8rem;
 }
 </style>
-
+<a href="{% url 'parts:request_create' %}" class="btn btn-primary">Добавить запрос</a>
 <form method="get">
   {{ filter.form }}
   <button type="submit">Поиск</button>
@@ -50,34 +50,20 @@ table {
     <th>Part Number</th>
     <th>Бренд</th>
     <th>Кол-во</th>
-    <th>Организация</th>
-    <th>Дата запроса</th>
+    <th>Клиент</th>
+    <th>Дата</th>
     <th>Менеджер</th>
-    <th>Номер в квоте</th>
-    <th>Quota Quantity</th>
-    <th>Quota Price</th>
-    <th>Quota DC</th>
-    <th>Quota Supplier</th>
-    <th>Quota Date</th>
-    <th>Rubble Price</th>
   </tr>
-  {% for item in result %}
+  {% for item in requests %}
   <tr>
-    <td>{{ item.request.id }}</td>
-    <td>{{ item.request.part.series }}</td>
-    <td>{{ item.request.part.number }}</td>
-    <td>{{ item.request.part.brand }}</td>
-    <td>{{ item.request.quantity }}</td>
-    <td>{{ item.request.customer }}</td>
-    <td>{{ item.request.date }}</td>
-    <td>{{ item.request.manager }}</td>
-    <td>{{ item.quota.part.number }}</td>
-    <td>{{ item.quota.quantity }}</td>
-    <td>{{ item.quota.price }}</td>
-    <td>{{ item.quota.datecode }}</td>
-    <td>{{ item.quota.supplier }}</td>
-    <td>{{ item.quota.date }}</td>
-    <td>{{ item.rubble_price }}</td>
+    <td>{{ item.id }}</td>
+    <td>{{ item.part.series }}</td>
+    <td>{{ item.part.number }}</td>
+    <td>{{ item.part.brand }}</td>
+    <td>{{ item.quantity }}</td>
+    <td>{{ item.customer }}</td>
+    <td>{{ item.date }}</td>
+    <td>{{ item.manager }}</td>
   </tr>
   {% endfor %}
 </table>

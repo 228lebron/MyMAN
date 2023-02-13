@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <style xmlns="http://www.w3.org/1999/html">
   td,
@@ -37,12 +38,7 @@ table {
     font-size: 0.8rem;
 }
 </style>
-
-<form method="get">
-  {{ filter.form }}
-  <button type="submit">Поиск</button>
-</form>
-
+<h2>Привет {{ manager }}</h2>
 <table>
   <tr>
     <th>№</th>
@@ -56,7 +52,6 @@ table {
     <th>Номер в квоте</th>
     <th>Quota Quantity</th>
     <th>Quota Price</th>
-    <th>Quota DC</th>
     <th>Quota Supplier</th>
     <th>Quota Date</th>
     <th>Rubble Price</th>
@@ -74,11 +69,11 @@ table {
     <td>{{ item.quota.part.number }}</td>
     <td>{{ item.quota.quantity }}</td>
     <td>{{ item.quota.price }}</td>
-    <td>{{ item.quota.datecode }}</td>
     <td>{{ item.quota.supplier }}</td>
     <td>{{ item.quota.date }}</td>
     <td>{{ item.rubble_price }}</td>
   </tr>
   {% endfor %}
 </table>
+
 {% endblock %}

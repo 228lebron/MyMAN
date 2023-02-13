@@ -1,26 +1,20 @@
 from django.urls import path
+from django.contrib.auth.views import LoginView
 from . import views
 
 
 app_name = 'parts'
 
 urlpatterns = [
+    path('accounts/login/', LoginView.as_view(), name='login'),
+
+    path('responses/', views.sale_manager_view, name='responses'),
     path('', views.requests_and_quotas, name='requests_and_quotas'),
-    #path('part/<int:pk>/', views.part_detail, name='part_detail'),
-    #path('parts/', views.parts_list, name='parts_list'),
-    #path('part/create/', views.PartCreateView.as_view(), name='part_create'),
-    #path('part/update/<int:pk>/', views.PartUpdateView.as_view(), name='part_update'),
-    #path('part/delete/<int:pk>/', views.PartDeleteView.as_view(), name='part_delete'),
-    #path('request/list/', views.RequestListView.as_view(), name='request_list'),
-    #path('request/create/', views.RequestCreateView.as_view(), name='request_create'),
-    #path('request/update/<int:pk>/', views.RequestUpdateView.as_view(), name='request_update'),
-    #path('request/delete/<int:pk>/', views.RequestDeleteView.as_view(), name='request_delete'),
-    #path('quote/list/', views.QuoteListView.as_view(), name='quote_list'),
-    #path('quote/create/', views.QuoteCreateView.as_view(), name='quote_create'),
-    #path('quote/update/<int:pk>/', views.QuoteUpdateView.as_view(), name='quote_update'),
-    ##path('quote/delete/<int:pk>/', views.QuoteDeleteView.as_view(), name='quote_delete'),
-    #path('order/list/', views.OrderListView.as_view(), name='order_list'),
-    #path('order/create/', views.OrderCreateView.as_view(), name='order_create'),
-    #path('order/update/<int:pk>/', views.OrderUpdateView.as_view(), name='order_update'),
-    ##path('order/delete/<int:pk>/', views.OrderDeleteView.as_view(), name='order_delete'),
+    path('quotas/', views.quota_list, name='quota_list'),
+    path('quotas/upload/', views.upload_quotas, name='upload_quotas'),
+    path('parts/', views.part_list, name='part_list'),
+    path('parts/<int:part_id>/', views.PartDetailView.as_view(), name='part_detail'),
+    path('parts/create/', views.PartCreateView.as_view(), name='part_create'),
+    path('request/create/', views.RequestCreateView.as_view(), name='request_create'),
+    path('request/list/', views.request_list, name='request_list'),
 ]
