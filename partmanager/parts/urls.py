@@ -17,4 +17,5 @@ urlpatterns = [
     path('parts/create/', views.PartCreateView.as_view(), name='part_create'),
     path('request/create/', views.RequestCreateView.as_view(), name='request_create'),
     path('request/list/', views.request_list, name='request_list'),
+    path('request/attach_quota/<int:pk>/', views.AttachQuotaToRequestView.as_view(), name='attach_quota'),
 ]

@@ -53,6 +53,11 @@ table {
     <th>Клиент</th>
     <th>Дата</th>
     <th>Менеджер</th>
+    <th>Номер из квоты</th>
+    <th>Бренд из квоты</th>
+    <th>Кол-во из квоты</th>
+    <th>Цена</th>
+
   </tr>
   {% for item in requests %}
   <tr>
@@ -64,6 +69,12 @@ table {
     <td>{{ item.customer }}</td>
     <td>{{ item.date }}</td>
     <td>{{ item.manager }}</td>
+    <td>{{ item.selected_quota.part.number }}</td>
+    <td>{{ item.selected_quota.part.brand }}</td>
+    <td>{{ item.selected_quota.quantity }}</td>
+    <td>{% if item.customer_price %}{{ item.customer_price }}{% else %}N/A{% endif %}</td>
+    <td><a href="{% url 'parts:attach_quota' item.id %}">Дать ответ</td>
+
   </tr>
   {% endfor %}
 </table>

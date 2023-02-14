@@ -1,6 +1,8 @@
 import openpyxl
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.cache import cache
+from django.views import View
+from django.utils import timezone
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login
@@ -9,10 +11,10 @@ from django.core.exceptions import ValidationError
 from django.db.models import Q, F, QuerySet, Min, Subquery
 from django.contrib.auth.models import User
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, UpdateView
 from .models import Request, Quota, Part, RequestQuotaResult
-from .filters import ReqFilter, QuotaFilter, PartFilter
-from .forms import QuotaUploadForm, PartForm
+from .filters import ReqFilter, QuotaFilter, PartFilter, RequestFilter
+from .forms import QuotaUploadForm, PartForm, RequestQuotaForm
 
 def in_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
@@ -121,11 +123,6 @@ def part_list(request):
     parts = partFilter.qs
     return render(request, 'parts/part_list.html', {'parts': parts, 'filter':partFilter,})
 
-#@login_required(login_url='login/')
-#def part_detail(request, part_id):
-#    part = get_object_or_404(Part, pk=part_id)
-#    return render(request, 'parts/part_detail.html', {'part': part})
-
 class PartDetailView(LoginRequiredMixin, TemplateView):
     template_name = 'parts/part_detail.html'
     login_url = 'accounts/login/'
@@ -141,14 +138,11 @@ class PartDetailView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, {'part': part, 'total_requests': total_requests,
                                                     'last_price': last_price, 'last_quota_date': last_quota_date})
 
-
 class PartCreateView(CreateView, LoginRequiredMixin):
     model = Part
     fields = ['series', 'number', 'brand']
     template_name = 'parts/part_form.html'
     success_url = reverse_lazy('parts:part_list')
-
-
 
 class RequestCreateView(CreateView, LoginRequiredMixin):
     model = Request
@@ -162,7 +156,22 @@ class RequestCreateView(CreateView, LoginRequiredMixin):
 
 @login_required(login_url='login/')
 def request_list(request):
+    manager = request.user
     requests = Request.objects.all()
-    reqFilter = ReqFilter(request.GET, queryset=requests)
+    reqFilter = RequestFilter(request.GET, queryset=requests)
     requests = reqFilter.qs
-    return render(request, 'requests/request_list.html', {'requests': requests, 'filter':reqFilter,})
+    for i in requests:
+        print(i.part.package_weight())
+    return render(request, 'requests/request_list.html', {'requests': requests, 'filter':reqFilter, 'user': manager,})
+class AttachQuotaToRequestView(UpdateView):
+    model = Request
+    fields = ['selected_quota', 'customer_price']
+    template_name = 'attach_quota.html'
+    success_url = reverse_lazy('parts:request_list')
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        request = self.get_object()
+        creation_date_cutoff = timezone.now() - timezone.timedelta(days=5)
+        form.fields['selected_quota'].queryset = Quota.objects.filter(part__series=request.part.series,
+                                                                      date__gte=creation_date_cutoff,)
+        return form

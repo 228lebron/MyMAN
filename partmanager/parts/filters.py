@@ -23,3 +23,10 @@ class PartFilter(django_filters.FilterSet):
     class Meta:
         model = Part
         fields = ['number', 'brand']
+
+class RequestFilter(django_filters.FilterSet):
+    part__number = django_filters.CharFilter(lookup_expr='icontains', label='Part number')
+    customer = django_filters.CharFilter(lookup_expr='icontains', label='Клиент')
+    class Meta:
+        model = Part
+        fields = ['part__number', 'customer']
