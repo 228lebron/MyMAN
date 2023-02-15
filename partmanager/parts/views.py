@@ -19,47 +19,39 @@ from .forms import QuotaUploadForm, PartForm, RequestQuotaForm
 def in_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
 
-def login_view(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                # Redirect the user to a success page.
-                return redirect('/responses')
-            else:
-                # Return an 'invalid login' error message.
-                return render(request, 'login.html', {'form': form, 'error_message': 'Invalid login'})
-    else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+#@user_passes_test(lambda u: in_group(u, 'product'))
+#@login_required(login_url='/login/')
+#def requests_and_quotas(request):
+#    requests = Request.objects.all()
+#    quotas = Quota.objects.all()
+#    for req in requests:
+#        match = False
+#        for quo in quotas:
+#            if (req.part.series == quo.part.series) and (abs((req.date - quo.date).days) <= 5):
+#                if not RequestQuotaResult.objects.filter(request=req, quota=quo).exists():
+#                    RequestQuotaResult.objects.update_or_create(request=req, quota=quo)
+#                    RequestQuotaResult.objects.filter(request=req, quota=None).delete()
+#                match = True
+#        if not match:
+#            if not RequestQuotaResult.objects.filter(request=req, quota=None).exists():
+#                RequestQuotaResult.objects.create(request=req, quota=None)
+#
+#    result_qs = RequestQuotaResult.objects.all().order_by('request_id')
+#
+#    myFilter = ReqFilter(request.GET, queryset=result_qs)
+#    result_qs = myFilter.qs
+#
+#    return render(request, 'requests_and_quotas.html', {'result': result_qs,'filter': myFilter})
 
-@user_passes_test(lambda u: in_group(u, 'product'))
-@login_required(login_url='/login/')
 def requests_and_quotas(request):
-    requests = Request.objects.all()
-    quotas = Quota.objects.all()
-    for req in requests:
-        match = False
-        for quo in quotas:
-            if (req.part.series == quo.part.series) and (abs((req.date - quo.date).days) <= 5):
-                if not RequestQuotaResult.objects.filter(request=req, quota=quo).exists():
-                    RequestQuotaResult.objects.update_or_create(request=req, quota=quo)
-                    RequestQuotaResult.objects.filter(request=req, quota=None).delete()
-                match = True
-        if not match:
-            if not RequestQuotaResult.objects.filter(request=req, quota=None).exists():
-                RequestQuotaResult.objects.create(request=req, quota=None)
-
     result_qs = RequestQuotaResult.objects.all().order_by('request_id')
-
     myFilter = ReqFilter(request.GET, queryset=result_qs)
     result_qs = myFilter.qs
 
     return render(request, 'requests_and_quotas.html', {'result': result_qs,'filter': myFilter})
+
+
+
 
 @login_required(login_url='login/')
 def sale_manager_view(request):

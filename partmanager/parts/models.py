@@ -6,7 +6,6 @@ PACKAGE_WEIGHTS = {
     'SOIC-8': 0.32,
     'SOIC-14': 0.55,
     'TO-92': 0.16,
-    # add more
 }
 
 class Part(models.Model):
@@ -35,7 +34,7 @@ class Quota(models.Model):
         if self is None:
             return 0
         part_weight = self.part.package_weight()
-        ruble_price = float(self.price) * 1.3 * 1.2 * 70 + part_weight * 1000
+        ruble_price = float(self.price) * 1.3 * 1.2 * 70 + part_weight * 2
         return round(ruble_price, 3)
 class Request(models.Model):
     part = models.ForeignKey(Part, on_delete=models.CASCADE)
