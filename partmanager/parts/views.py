@@ -19,30 +19,6 @@ from .forms import QuotaUploadForm, PartForm, RequestQuotaForm
 def in_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
 
-#@user_passes_test(lambda u: in_group(u, 'product'))
-#@login_required(login_url='/login/')
-#def requests_and_quotas(request):
-#    requests = Request.objects.all()
-#    quotas = Quota.objects.all()
-#    for req in requests:
-#        match = False
-#        for quo in quotas:
-#            if (req.part.series == quo.part.series) and (abs((req.date - quo.date).days) <= 5):
-#                if not RequestQuotaResult.objects.filter(request=req, quota=quo).exists():
-#                    RequestQuotaResult.objects.update_or_create(request=req, quota=quo)
-#                    RequestQuotaResult.objects.filter(request=req, quota=None).delete()
-#                match = True
-#        if not match:
-#            if not RequestQuotaResult.objects.filter(request=req, quota=None).exists():
-#                RequestQuotaResult.objects.create(request=req, quota=None)
-#
-#    result_qs = RequestQuotaResult.objects.all().order_by('request_id')
-#
-#    myFilter = ReqFilter(request.GET, queryset=result_qs)
-#    result_qs = myFilter.qs
-#
-#    return render(request, 'requests_and_quotas.html', {'result': result_qs,'filter': myFilter})
-
 def requests_and_quotas(request):
     result_qs = RequestQuotaResult.objects.all().order_by('request_id')
     myFilter = ReqFilter(request.GET, queryset=result_qs)
@@ -77,15 +53,13 @@ def create_quotas_from_xlsx(file):
 
     quotas = []
     for row in ws.iter_rows(values_only=True):
-        part_number, brand, quantity, price, datecode, supplier, date = row
-        print(row)
+        part_number, brand, quantity, price, datecode, lead_time, supplier, date = row
         try:
             part = Part.objects.get(number=part_number, brand=brand)
-            print('Нашел совпадение по Part')
         except Part.DoesNotExist:
             part = Part.objects.create(number=part_number, series=f"Введите серию {part_number[:6]}", brand=brand)
-        quotas.append(Quota(part=part, quantity=quantity, price=price, datecode=datecode, supplier=supplier, date=date))
-
+        quotas.append(Quota(part=part, quantity=quantity, price=price, datecode=datecode, supplier=supplier,
+                            lead_time=lead_time, date=date))
     Quota.objects.bulk_create(quotas)
 
 @login_required(login_url='login/')
@@ -157,7 +131,7 @@ def request_list(request):
     return render(request, 'requests/request_list.html', {'requests': requests, 'filter':reqFilter, 'user': manager,})
 class AttachQuotaToRequestView(UpdateView):
     model = Request
-    fields = ['selected_quota', 'customer_price']
+    fields = ['selected_quota', 'currency', 'customer_price']
     template_name = 'attach_quota.html'
     success_url = reverse_lazy('parts:request_list')
     def get_form(self, form_class=None):
