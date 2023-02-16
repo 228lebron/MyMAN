@@ -56,7 +56,7 @@ table {
     <th>Номер из квоты</th>
     <th>Бренд из квоты</th>
     <th>Кол-во из квоты</th>
-    <th>Цена</th>
+    <th>Цена клиенту</th>
 
   </tr>
   {% for item in requests %}
@@ -72,8 +72,8 @@ table {
     <td>{{ item.selected_quota.part.number }}</td>
     <td>{{ item.selected_quota.part.brand }}</td>
     <td>{{ item.selected_quota.quantity }}</td>
-    <td>{% if item.customer_price %}{{ item.customer_price }}{% else %}N/A{% endif %}</td>
-    <td><a href="{% url 'parts:attach_quota' item.id %}">Дать ответ</td>
+    <td>{% if item.customer_price %}{{ item.customer_price }}{% else %}Ожидайте цену{% endif %}</td>
+    <td><button type="button" class="btn btn-primary" onclick="window.location.href='{% url 'parts:attach_quota' item.id %}'">Ответить</button></td>
 
   </tr>
   {% endfor %}

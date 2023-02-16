@@ -54,12 +54,14 @@ table {
     <th>Дата запроса</th>
     <th>Менеджер</th>
     <th>Номер в квоте</th>
+    <th>Бренд</th>
     <th>Quota Quantity</th>
-    <th>Quota Price</th>
+    <th>USD Price</th>
+    <th>RUB Price</th>
+    <th>Морем/Авиа</th>
     <th>Quota DC</th>
     <th>Quota Supplier</th>
     <th>Quota Date</th>
-    <th>Rubble Price</th>
   </tr>
   {% for item in result %}
   <tr>
@@ -69,15 +71,17 @@ table {
     <td>{{ item.request.part.brand }}</td>
     <td>{{ item.request.quantity }}</td>
     <td>{{ item.request.customer }}</td>
-    <td>{{ item.request.date }}</td>
+    <td>{{ item.request.date|date:"d.m.Y" }}</td>
     <td>{{ item.request.manager }}</td>
     <td>{{ item.quota.part.number }}</td>
+    <td>{{ item.quota.part.brand }}</td>
     <td>{{ item.quota.quantity }}</td>
     <td>{{ item.quota.price }}</td>
+    <td>{{ item.quota.ruble_price|floatformat:2 }}</td>
+    <td>{{ item.ruble_sea_price|floatformat:2 }} | {{ item.ruble_air_price|floatformat:2 }}</td>
     <td>{{ item.quota.datecode }}</td>
     <td>{{ item.quota.supplier }}</td>
-    <td>{{ item.quota.date }}</td>
-    <td>{{ item.quota.rubble_price }}</td>
+    <td>{{ item.quota.date|date:"d.m.Y" }}</td>
   </tr>
   {% endfor %}
 </table>
