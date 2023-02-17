@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.utils.timezone import timezone, timedelta
 
 USD_rate = 75
+air_shipping_cost = 5
+sea_shipping_cost = 1
 
 PACKAGE_WEIGHTS = {
     'SOIC-8': 0.32,
@@ -73,13 +75,14 @@ class RequestQuotaResult(models.Model):
     request = models.ForeignKey(Request, on_delete=models.CASCADE)
     quota = models.ForeignKey(Quota, on_delete=models.SET_NULL, null=True)
 
+    #Total price = (Weight of package in kilograms) x (Cost of shipping per kilogram) + (Price of goods)
     ruble_air_price = models.DecimalField(max_digits=10, decimal_places=4, verbose_name='Авиа RUB', default=0)
     ruble_sea_price = models.DecimalField(max_digits=10, decimal_places=4, verbose_name='Морем RUB', default=0)
 
     def save(self, *args, **kwargs):
        if self.quota:
-           self.ruble_air_price = round(float(self.quota.ruble_price) * 1.35, 2)
-           self.ruble_sea_price = round(float(self.quota.ruble_price) * 1.25, 2)
+           self.ruble_air_price = self.quota.part.package_weight() * air_shipping_cost + float(self.quota.price)
+           self.ruble_sea_price = self.quota.part.package_weight() * sea_shipping_cost + float(self.quota.price)
        super(RequestQuotaResult, self).save(*args, **kwargs)
 
     class Meta:

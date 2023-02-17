@@ -72,7 +72,7 @@ table {
     <td>{{ item.selected_quota.part.number }}</td>
     <td>{{ item.selected_quota.part.brand }}</td>
     <td>{{ item.selected_quota.quantity }}</td>
-    <td>{% if item.customer_price %}{{ item.customer_price }}{% else %}Ожидайте цену{% endif %}</td>
+    <td>{% if item.customer_price %}{{ item.customer_price }} {{ item.currency }}{% else %}Ответить{% endif %}</td>
     <td><button type="button" class="btn btn-primary" onclick="window.location.href='{% url 'parts:attach_quota' item.id %}'">Ответить</button></td>
 
   </tr>

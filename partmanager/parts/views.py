@@ -19,33 +19,39 @@ from .forms import QuotaUploadForm, PartForm, RequestQuotaForm
 def in_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
 
+@login_required()
 def requests_and_quotas(request):
+    current_user_groups = request.user.groups.values_list("name", flat=True)
+    if "sale" in current_user_groups:
+        return redirect('responses/')
+
     result_qs = RequestQuotaResult.objects.all().order_by('request_id')
     myFilter = ReqFilter(request.GET, queryset=result_qs)
     result_qs = myFilter.qs
+    context = {
+        'result': result_qs,
+        'filter': myFilter,
+        "is_sale": "sale" in current_user_groups,
+        "is_product_man": "product" in current_user_groups,
+    }
 
-    return render(request, 'requests_and_quotas.html', {'result': result_qs,'filter': myFilter})
+    return render(request, 'requests_and_quotas.html', context)
 
-
-
-
-@login_required(login_url='login/')
+@login_required()
 def sale_manager_view(request):
+    current_user_groups = request.user.groups.values_list("name", flat=True)
     manager = request.user
-
-    results = RequestQuotaResult.objects.filter(request__manager=manager).select_related('request', 'quota__part').order_by('quota__price')
-    unique_results = []
-    part_numbers = []
-
-    for result in results:
-        try:
-            if result.quota.part.number not in part_numbers:
-                unique_results.append(result)
-                part_numbers.append(result.quota.part.number)
-        except AttributeError:
-            continue
-
-    return render(request, 'manager_view.html', {'result': unique_results, 'manager': manager,})
+    requests = Request.objects.filter(manager=manager)
+    reqFilter = RequestFilter(request.GET, queryset=requests)
+    requests = reqFilter.qs
+    context = {
+        'requests': requests,
+        'filter': reqFilter,
+        'user': manager,
+        "is_sale": "sale" in current_user_groups,
+        "is_product_man": "product" in current_user_groups,
+    }
+    return render(request, 'manager_view.html', context)
 
 def create_quotas_from_xlsx(file):
     wb = openpyxl.load_workbook(file)
@@ -62,7 +68,7 @@ def create_quotas_from_xlsx(file):
                             lead_time=lead_time, date=date))
     Quota.objects.bulk_create(quotas)
 
-@login_required(login_url='login/')
+@login_required()
 def upload_quotas(request):
     if request.method == 'POST':
         form = QuotaUploadForm(request.POST, request.FILES)
@@ -73,8 +79,12 @@ def upload_quotas(request):
         form = QuotaUploadForm()
     return render(request, 'quotas_upload.html', {'form': form})
 
-@login_required(login_url='login/')
+@login_required()
 def quota_list(request):
+    current_user_groups = request.user.groups.values_list("name", flat=True)
+    if "sale" in current_user_groups:
+        return redirect('responses/')
+
     result_qs = Quota.objects.all().order_by('id')
 
     quotaFilter = QuotaFilter(request.GET, queryset=result_qs)
@@ -82,12 +92,19 @@ def quota_list(request):
 
     return render(request, 'quotas_list.html', {'result': result_qs, 'filter': quotaFilter})
 
-@login_required(login_url='login/')
+@login_required()
 def part_list(request):
+    current_user_groups = request.user.groups.values_list("name", flat=True)
     parts = Part.objects.all()
     partFilter = PartFilter(request.GET, queryset=parts)
     parts = partFilter.qs
-    return render(request, 'parts/part_list.html', {'parts': parts, 'filter':partFilter,})
+    context = {
+        'parts': parts,
+        'filter': partFilter,
+        "is_sale": "sale" in current_user_groups,
+        "is_product_man": "product" in current_user_groups,
+    }
+    return render(request, 'parts/part_list.html', context)
 
 class PartDetailView(LoginRequiredMixin, TemplateView):
     template_name = 'parts/part_detail.html'
@@ -109,25 +126,39 @@ class PartCreateView(CreateView, LoginRequiredMixin):
     fields = ['series', 'number', 'brand']
     template_name = 'parts/part_form.html'
     success_url = reverse_lazy('parts:part_list')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_user_groups = self.request.user.groups.values_list("name", flat=True)
+        context['is_sale'] = "sale" in current_user_groups
+        context['is_product_man'] = "product" in current_user_groups
+        return context
+
 
 class RequestCreateView(CreateView, LoginRequiredMixin):
     model = Request
     fields = ['part', 'quantity', 'customer', 'date']
     template_name = 'requests/request_form.html'
-    success_url = reverse_lazy('parts:request_list')
+    success_url = reverse_lazy('parts:responses')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_user_groups = self.request.user.groups.values_list("name", flat=True)
+        context['is_sale'] = "sale" in current_user_groups
+        context['is_product_man'] = "product" in current_user_groups
+        return context
 
     def form_valid(self, form):
         form.instance.manager = self.request.user
         return super().form_valid(form)
 
-@login_required(login_url='login/')
+@login_required()
 def request_list(request):
+    current_user_groups = request.user.groups.values_list("name", flat=True)
+    if "sale" in current_user_groups:
+        return redirect('responses/')
     manager = request.user
     requests = Request.objects.all()
     reqFilter = RequestFilter(request.GET, queryset=requests)
     requests = reqFilter.qs
-    for i in requests:
-        print(i.part.package_weight())
     return render(request, 'requests/request_list.html', {'requests': requests, 'filter':reqFilter, 'user': manager,})
 class AttachQuotaToRequestView(UpdateView):
     model = Request

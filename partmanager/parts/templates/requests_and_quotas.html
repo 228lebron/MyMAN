@@ -58,8 +58,9 @@ table {
     <th>Quota Quantity</th>
     <th>USD Price</th>
     <th>RUB Price</th>
-    <th>Морем/Авиа</th>
+    <th>Морем/Авиа </th>
     <th>Quota DC</th>
+    <th>Lead Time</th>
     <th>Quota Supplier</th>
     <th>Quota Date</th>
   </tr>
@@ -80,6 +81,7 @@ table {
     <td>{{ item.quota.ruble_price|floatformat:2 }}</td>
     <td>{{ item.ruble_sea_price|floatformat:2 }} | {{ item.ruble_air_price|floatformat:2 }}</td>
     <td>{{ item.quota.datecode }}</td>
+    <td>{{ item.quota.lead_time }}</td>
     <td>{{ item.quota.supplier }}</td>
     <td>{{ item.quota.date|date:"d.m.Y" }}</td>
   </tr>
