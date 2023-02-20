@@ -40,10 +40,10 @@ class Quota(models.Model):
     quantity = models.PositiveIntegerField(verbose_name='Количество')
     price = models.DecimalField(max_digits=10, decimal_places=4, verbose_name='U/P USD')
     ruble_price = models.DecimalField(max_digits=10, decimal_places=4, verbose_name='U/P RUB', default=0)
-    datecode = models.PositiveIntegerField()
-    lead_time = models.CharField(max_length=100)
-    supplier = models.CharField(max_length=100)
-    date = models.DateField()
+    datecode = models.PositiveIntegerField(verbose_name='DC')
+    lead_time = models.CharField(max_length=100, verbose_name='Срок')
+    supplier = models.CharField(max_length=100, verbose_name='Поставщик')
+    date = models.DateField(verbose_name='Дата квоты')
 
     def __str__(self):
         return f'{self.part.number} ({self.part.brand}) ({self.quantity} шт.) ({self.price}$) ({self.supplier}) ({self.date})'
@@ -55,10 +55,10 @@ class Quota(models.Model):
         verbose_name_plural = "Квоты"
 class Request(models.Model):
     part = models.ForeignKey(Part, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    customer = models.CharField(max_length=100)
-    date = models.DateField()
-    manager = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requests')
+    quantity = models.PositiveIntegerField(verbose_name='Кол-во')
+    customer = models.CharField(max_length=100, verbose_name='Клиент')
+    date = models.DateField(verbose_name='Дата запроса')
+    manager = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requests', verbose_name='Менеджер')
 
     selected_quota = models.ForeignKey(Quota, on_delete=models.SET_NULL, null=True, blank=True, related_name='selected_quotas')
     customer_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
@@ -76,8 +76,8 @@ class RequestQuotaResult(models.Model):
     quota = models.ForeignKey(Quota, on_delete=models.SET_NULL, null=True)
 
     #Total price = (Weight of package in kilograms) x (Cost of shipping per kilogram) + (Price of goods)
-    ruble_air_price = models.DecimalField(max_digits=10, decimal_places=4, verbose_name='Авиа RUB', default=0)
-    ruble_sea_price = models.DecimalField(max_digits=10, decimal_places=4, verbose_name='Морем RUB', default=0)
+    ruble_air_price = models.DecimalField(max_digits=10, decimal_places=4, verbose_name='Авиа', default=0)
+    ruble_sea_price = models.DecimalField(max_digits=10, decimal_places=4, verbose_name='Морем', default=0)
 
     def save(self, *args, **kwargs):
        if self.quota:
