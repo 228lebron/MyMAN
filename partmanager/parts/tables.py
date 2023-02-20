@@ -1,31 +1,53 @@
 import django_tables2 as tables
-from .models import Part, Request, Quota
+from .models import Part, Request, Quota, RequestQuotaResult
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 
-class RequestsAndQuotasTable(tables.Table):
-    request_part_number = tables.Column(accessor='request.part_number.number')
-    request_brand = tables.Column(accessor='request.brand')
-    request_quantity = tables.Column(accessor='request.quantity')
-    request_date = tables.Column(accessor='request.date')
-    quota_part_number = tables.Column(accessor='quota.part_number.number')
-    quota_brand = tables.Column(accessor='quota.brand')
-    quota_quantity = tables.Column(accessor='quota.quantity')
-    quota_price = tables.Column(accessor='quota.price')
-    quota_supplier = tables.Column(accessor='quota.supplier')
-    quota_date = tables.Column(accessor='quota.date')
+class PartTable(tables.Table):
+    edit_button = tables.TemplateColumn(
+        '<a href="{% url "parts:part_edit" record.id %}" class="btn btn-outline-dark btn-sm">Edit</a>',
+        verbose_name='',
+        orderable=False)
 
     class Meta:
+        model = Part
+        fields = ('id', 'series', 'number', 'brand', 'case_type')
+        attrs = {'class': 'table table-hover table table-bordered',}
+        row_attrs = {
+            'style': 'text-align:center;'
+        }
+
+    def render_number(self, value, record):
+        url = reverse('parts:part_detail', args=[record.id])
+        return mark_safe('<a href="{}">{}</a>'.format(url, value))
+
+
+class RequestTable(tables.Table):
+    customer_price_with_currency = tables.TemplateColumn('{{ record.customer_price }} {{ record.currency }}',
+                                                         verbose_name='Цена клиенту')
+    edit_button = tables.TemplateColumn(
+        '<a href="{% url "parts:attach_quota" record.id %}" class="btn btn-outline-success btn-sm">+</a>',
+        verbose_name='',
+        orderable=False)
+    class Meta:
         model = Request
-        template_name = 'django_tables2/bootstrap4.html'
-        fields = (
-            'request_part_number',
-            'request_brand',
-            'request_quantity',
-            'request_date',
-            'quota_part_number',
-            'quota_brand',
-            'quota_quantity',
-            'quota_price',
-            'quota_supplier',
-            'quota_date'
-        )
+        fields = ('part.number', 'part.brand', 'customer', 'date', 'manager', 'selected_quota.part.number',
+                  'selected_quota.part.brand', 'selected_quota.date')
+        attrs = {'class': 'table table-hover table table-bordered', }
+        row_attrs = {
+            'style': 'text-align:center;'
+        }
+
+
+class RequestQuotaTable(tables.Table):
+    class Meta:
+        model = RequestQuotaResult
+        fields = ('request.id', 'request.part.number', 'request.part.brand', 'request.quantity', 'request.customer',
+                  'request.date', 'request.manager', 'quota.part.number', 'quota.part.brand', 'quota.quantity',
+                  'quota.price', 'quota.ruble_price', 'ruble_sea_price', 'ruble_air_price', 'quota.datecode',
+                  'quota.lead_time', 'quota.supplier', 'quota.date')
+        attrs = {'class': 'table table-hover table table-bordered table table-sm', }
+        row_attrs = {
+            'style': 'text-align:center;'
+        }

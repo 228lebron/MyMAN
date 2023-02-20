@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h3>Редактирование {{ object }}</h3>
+<table>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_table }}
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</table>
+{% endblock %}

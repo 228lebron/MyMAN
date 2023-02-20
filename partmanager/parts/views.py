@@ -15,6 +15,9 @@ from django.views.generic import CreateView, TemplateView, UpdateView
 from .models import Request, Quota, Part, RequestQuotaResult
 from .filters import ReqFilter, QuotaFilter, PartFilter, RequestFilter
 from .forms import QuotaUploadForm, PartForm, RequestQuotaForm
+from .tables import PartTable, RequestTable, RequestQuotaTable
+from django_tables2 import RequestConfig
+from django.core.paginator import Paginator
 
 def in_group(user, group_name):
     return user.groups.filter(name=group_name).exists()
@@ -24,18 +27,20 @@ def requests_and_quotas(request):
     current_user_groups = request.user.groups.values_list("name", flat=True)
     if "sale" in current_user_groups:
         return redirect('responses/')
-
-    result_qs = RequestQuotaResult.objects.all().order_by('request_id')
+    result_qs = RequestQuotaResult.objects.all().order_by('-request_id')
     myFilter = ReqFilter(request.GET, queryset=result_qs)
     result_qs = myFilter.qs
+    table = RequestQuotaTable(result_qs)
+    RequestConfig(request).configure(table)
     context = {
         'result': result_qs,
         'filter': myFilter,
         "is_sale": "sale" in current_user_groups,
         "is_product_man": "product" in current_user_groups,
+        'table': table,
     }
 
-    return render(request, 'requests_and_quotas.html', context)
+    return render(request, 'product_view.html', context)
 
 @login_required()
 def sale_manager_view(request):
@@ -98,9 +103,12 @@ def part_list(request):
     parts = Part.objects.all()
     partFilter = PartFilter(request.GET, queryset=parts)
     parts = partFilter.qs
+    table = PartTable(parts)
+    RequestConfig(request).configure(table)
     context = {
         'parts': parts,
         'filter': partFilter,
+        'table': table,
         "is_sale": "sale" in current_user_groups,
         "is_product_man": "product" in current_user_groups,
     }
@@ -121,10 +129,24 @@ class PartDetailView(LoginRequiredMixin, TemplateView):
         return render(request, self.template_name, {'part': part, 'total_requests': total_requests,
                                                     'last_price': last_price, 'last_quota_date': last_quota_date})
 
+
 class PartCreateView(CreateView, LoginRequiredMixin):
     model = Part
-    fields = ['series', 'number', 'brand']
+    fields = ['series', 'number', 'brand', 'case_type']
     template_name = 'parts/part_form.html'
+    success_url = reverse_lazy('parts:part_list')
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_user_groups = self.request.user.groups.values_list("name", flat=True)
+        context['is_sale'] = "sale" in current_user_groups
+        context['is_product_man'] = "product" in current_user_groups
+        return context
+
+
+class PartUpdateView(UpdateView, LoginRequiredMixin):
+    model = Part
+    fields = ['series', 'number', 'brand', 'case_type']
+    template_name = 'parts/part_edit.html'
     success_url = reverse_lazy('parts:part_list')
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -159,7 +181,10 @@ def request_list(request):
     requests = Request.objects.all()
     reqFilter = RequestFilter(request.GET, queryset=requests)
     requests = reqFilter.qs
-    return render(request, 'requests/request_list.html', {'requests': requests, 'filter':reqFilter, 'user': manager,})
+    table = RequestTable(requests)
+    RequestConfig(request).configure(table)
+    table.paginate(page=request.GET.get('page', 1), per_page=10)
+    return render(request, 'requests/request_list.html', {'requests': requests, 'filter':reqFilter, 'user': manager, 'table': table, })
 class AttachQuotaToRequestView(UpdateView):
     model = Request
     fields = ['selected_quota', 'currency', 'customer_price']

@@ -60,9 +60,9 @@ class Request(models.Model):
     date = models.DateField()
     manager = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requests')
 
-    selected_quota = models.ForeignKey(Quota, on_delete=models.SET_NULL, null=True, related_name='selected_quotas')
-    customer_price = models.DecimalField(max_digits=10, decimal_places=2, null=True)
-    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES)
+    selected_quota = models.ForeignKey(Quota, on_delete=models.SET_NULL, null=True, blank=True, related_name='selected_quotas')
+    customer_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
+    currency = models.CharField(max_length=3, choices=CURRENCY_CHOICES, null=True, default='RUB')
     def __str__(self):
         return f'{self.part.number} - {self.quantity} - {self.customer}'
 

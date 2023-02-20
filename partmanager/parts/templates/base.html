@@ -1,15 +1,52 @@
 {% load static %}
+{% load bootstrap5 %}
 <html>
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+{% bootstrap_messages %}
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
         <title>{% block title %}{% endblock %}</title>
     </head>
-    <body>
-    {% include "main_menu.html" %}
-    <div class="container mt-5">
-            {% block content %}
+    <!-- Header -->
+  <header class="bg-dark text-white py-3">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-6">
+          <h5>Build v0.0.1</h5>
+        </div>
+        <div class="col-md-6 text-right">
+           <p class="mb-0">Welcome, <b>{{ user }}</b></p>
+            {% if user.is_authenticated %}
+          <p class="mb-0"><a href="{% url 'parts:logout' %}">Logout</a></p>
+            {% else %}
+            <p class="mb-0"><a href="{% url 'parts:login' %}">Login</a></p>
+            {% endif %}
+        </div>
+      </div>
+    </div>
+  </header>
 
+    <div class="container mt-4">
+    <div class="row">
+      <!-- Vertical Menu -->
+      <div class="col-md-2">
+        <div class="list-group">
+          <a href="{% url 'parts:part_list' %}" class="list-group-item list-group-item-action">Микросхемы</a>
+          <a href="{% url 'parts:request_list' %}" class="list-group-item list-group-item-action">Запросы</a>
+          <a href="{% url 'parts:requests_and_quotas' %}" class="list-group-item list-group-item-action">Таблица</a>
+            <a href="{% url 'parts:quota_list' %}" class="list-group-item list-group-item-action">Квоты</a>
+        </div>
+      </div>
+
+    <body>
+      <div class="col-md-10">
+          {% block content %}
             {% endblock %}
+      </div>
+    </div>
+  </div>
     </body>
