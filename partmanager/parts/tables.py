@@ -41,13 +41,16 @@ class RequestTable(tables.Table):
 
 
 class RequestQuotaTable(tables.Table):
+    quota_number = tables.Column(verbose_name='Номер квоты', accessor='quota.part.number')
+    quota_brand = tables.Column(verbose_name='Бренд квоты', accessor='quota.part.brand')
     class Meta:
         model = RequestQuotaResult
         fields = ('request.id', 'request.part.number', 'request.part.brand', 'request.quantity', 'request.customer',
-                  'request.date', 'request.manager', 'quota.part.number', 'quota.part.brand', 'quota.quantity',
+                  'request.date', 'request.manager', 'quota_number', 'quota_brand', 'quota.quantity',
                   'quota.price', 'quota.ruble_price', 'ruble_sea_price', 'ruble_air_price', 'quota.datecode',
                   'quota.lead_time', 'quota.supplier', 'quota.date')
         attrs = {'class': 'table table-hover table table-bordered table table-sm', }
         row_attrs = {
             'style': 'text-align:center;'
         }
+
