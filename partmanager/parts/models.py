@@ -55,11 +55,20 @@ class Quota(models.Model):
         verbose_name = "Квота"
         verbose_name_plural = "Квоты"
 class Request(models.Model):
+
+    STATUS_CHOICES = (
+        ('QUOTA', 'Есть квота'),
+        ('NO_QUOTA', 'Нет квоты'),
+        ('PAID', 'Оплачен'),
+        ('ORDERED', 'Заказан')
+    )
+
     part = models.ForeignKey(Part, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(verbose_name='Кол-во')
     customer = models.CharField(max_length=100, verbose_name='Клиент')
     date = models.DateField(verbose_name='Дата запроса')
     manager = models.ForeignKey(User, on_delete=models.CASCADE, related_name='requests', verbose_name='Менеджер')
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='NO_QUOTA', verbose_name='Статус')
 
     selected_quota = models.ForeignKey(Quota, on_delete=models.SET_NULL, null=True, blank=True, related_name='selected_quotas')
     customer_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0)
@@ -76,14 +85,13 @@ class RequestQuotaResult(models.Model):
     request = models.ForeignKey(Request, on_delete=models.CASCADE)
     quota = models.ForeignKey(Quota, on_delete=models.SET_NULL, null=True)
 
-    #Total price = (Weight of package in kilograms) x (Cost of shipping per kilogram) + (Price of goods)
     ruble_air_price = models.DecimalField(max_digits=10, decimal_places=4, verbose_name='Авиа', default=0)
     ruble_sea_price = models.DecimalField(max_digits=10, decimal_places=4, verbose_name='Морем', default=0)
 
     def save(self, *args, **kwargs):
        if self.quota:
-           self.ruble_air_price = self.quota.part.package_weight() * air_shipping_cost + float(self.quota.price)
-           self.ruble_sea_price = self.quota.part.package_weight() * sea_shipping_cost + float(self.quota.price)
+           self.ruble_air_price = (self.quota.part.package_weight() * air_shipping_cost + float(self.quota.price)) * USD_rate
+           self.ruble_sea_price = (self.quota.part.package_weight() * sea_shipping_cost + float(self.quota.price)) * USD_rate
        super(RequestQuotaResult, self).save(*args, **kwargs)
 
     class Meta:

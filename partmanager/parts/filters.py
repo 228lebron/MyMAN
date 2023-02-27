@@ -13,10 +13,11 @@ class ReqFilter(django_filters.FilterSet):
 
 class QuotaFilter(django_filters.FilterSet):
     part__number = django_filters.CharFilter(lookup_expr='icontains', label='Part number')
+    part__brand = django_filters.CharFilter(lookup_expr='icontains', label='Brand')
     date = django_filters.DateFromToRangeFilter(label='Date')
     class Meta:
         model = Quota
-        fields = ['part__number', 'date', 'supplier']
+        fields = ['part__number', 'part__brand', 'date', 'supplier']
 
 class PartFilter(django_filters.FilterSet):
     number = django_filters.CharFilter(lookup_expr='icontains', label='Part number')

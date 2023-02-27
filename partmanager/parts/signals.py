@@ -20,3 +20,9 @@ def create_quota_request_result(sender, instance, **kwargs):
                 if not RequestQuotaResult.objects.filter(request=req, quota=instance).exists():
                     RequestQuotaResult.objects.update_or_create(request=req, quota=instance)
                     RequestQuotaResult.objects.filter(request=req, quota=None).delete()
+
+#@receiver(post_save, sender=Request)
+#def update_request_status(sender, instance, **kwargs):
+#    if instance.selected_quota and instance.status != 'PAID':
+#        instance.status = 'QUOTA'
+#        instance.save()

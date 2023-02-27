@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="table-responsive-xxl">
+  <table class="table table-hover table table-bordered border-primary">
+  <tr>
+    <th>Клиент</th>
+    <th>Всего запросов</th>
+    <th>Всего оплаченых</th>
+    <th>Оплаченых %</th>
+
+  </tr>
+  {% for item in clients %}
+  <tr>
+    <td>{{ item.customer }}</td>
+    <td>{{ item.total_requests }}</td>
+    <td>{{ item.paid_requests }}</td>
+    <td>{{ item.redemption_percent }}</td>
+
+  {% endfor %}
+
+{% endblock %}

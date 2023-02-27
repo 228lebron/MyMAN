@@ -27,14 +27,15 @@ class RequestTable(tables.Table):
     customer_price_with_currency = tables.TemplateColumn('{{ record.customer_price }} {{ record.currency }}',
                                                          verbose_name='Цена клиенту')
     edit_button = tables.TemplateColumn(
-        '<a href="{% url "parts:attach_quota" record.id %}" class="btn btn-outline-success btn-sm">+</a>',
+        '<a href="{% url "parts:attach_quota" record.id %}" class="btn btn-outline-success btn-xs">+</a>',
         verbose_name='',
         orderable=False)
+
     class Meta:
         model = Request
         fields = ('part.number', 'part.brand', 'customer', 'date', 'manager', 'selected_quota.part.number',
-                  'selected_quota.part.brand', 'selected_quota.date')
-        attrs = {'class': 'table table-hover table table-bordered', }
+                  'selected_quota.part.brand', 'selected_quota.date', 'status',)
+        attrs = {'class': 'table table-hover table table-bordered',}
         row_attrs = {
             'style': 'text-align:center;'
         }
@@ -49,7 +50,7 @@ class RequestQuotaTable(tables.Table):
                   'request.date', 'request.manager', 'quota_number', 'quota_brand', 'quota.quantity',
                   'quota.price', 'quota.ruble_price', 'ruble_sea_price', 'ruble_air_price', 'quota.datecode',
                   'quota.lead_time', 'quota.supplier', 'quota.date')
-        attrs = {'class': 'table table-hover table table-bordered table table-sm', }
+        attrs = {'class': 'table table-hover table table-bordered table table-sm', 'id': 'my-table', }
         row_attrs = {
             'style': 'text-align:center;'
         }

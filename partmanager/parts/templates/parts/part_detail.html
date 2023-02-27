@@ -1,12 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
-  <h1>Part Detail</h1>
-  <ul>
-    <li>Series: {{ part.series }}</li>
-    <li>Number: {{ part.number }}</li>
-    <li>Brand: {{ part.brand }}</li>
-    <li>Total Requests: {{ total_requests }}</li>
-    <li>Last Quota date: {% if last_quota_date %}{{ last_quota_date }}{% else %}N/A{% endif %}</li>
-    <li>Last Price: {% if last_price %}{{ last_price }}{% else %}N/A{% endif %}</li>
-  </ul>
+  <div class="container">
+    <h1>Part Detail</h1>
+    <ul>
+      <li>Series: {{ part.series }}</li>
+      <li>Number: {{ part.number }}</li>
+      <li>Brand: {{ part.brand }}</li>
+      <li>Total Requests: {{ total_requests }}</li>
+      <li>Last Quota date: {% if last_quota_date %}{{ last_quota_date }}{% else %}N/A{% endif %}</li>
+      <li>Last Price: {% if last_price %}{{ last_price }}{% else %}N/A{% endif %}</li>
+    </ul>
+
+  {% if graph %}
+          <h2>Price Chart</h2>
+          <img src="data:image/png;base64,{{ graph }}" />
+      {% endif %}
+
+<div class="table-responsive-xxl">
+  <table class="table table-hover table table-bordered border-primary">
+  <tr>
+    <th>Кол-во</th>
+    <th>Цена</th>
+    <th>Дата</th>
+  </tr>
+  {% for item in quotas %}
+  <tr>
+    <td>{{ item.quantity }}</td>
+    <td>{{ item.price }}</td>
+    <td>{{ item.date }}</td>
+  </tr>
+      {% endfor %}
+      </div>
 {% endblock %}
