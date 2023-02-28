@@ -51,7 +51,7 @@
     {% if item.status == "PAID" %}Ожидайте статус "Заказан"{% else %}
       <form method="post" action="{% url 'parts:add_bill' item.id %}">
       {% csrf_token %}
-      <button type="submit">Оплачен</button>
+      <button class="btn btn-primary" type="submit">Оплачен</button>
       </form>
     </td>
       {% endif %}

@@ -1,3 +1,5 @@
+from cProfile import label
+
 import django_filters
 from .models import *
 
@@ -27,9 +29,10 @@ class PartFilter(django_filters.FilterSet):
         fields = ['number', 'brand']
 
 class RequestFilter(django_filters.FilterSet):
+    date = django_filters.DateFromToRangeFilter(label='Date')
     part__number = django_filters.CharFilter(lookup_expr='icontains', label='Part number')
     customer = django_filters.CharFilter(lookup_expr='icontains', label='Клиент')
-    date = django_filters.DateFromToRangeFilter(label='Date')
+    manager = django_filters.CharFilter(lookup_expr='icontains', label='Менеджер')
     class Meta:
         model = Part
-        fields = ['part__number', 'customer', 'date']
+        fields = ['part__number', 'customer', 'manager', 'date']

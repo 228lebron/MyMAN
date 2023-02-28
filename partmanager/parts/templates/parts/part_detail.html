@@ -1,34 +1,86 @@
 {% extends 'base.html' %}
 {% block content %}
-  <div class="container">
-    <h1>Part Detail</h1>
-    <ul>
-      <li>Series: {{ part.series }}</li>
-      <li>Number: {{ part.number }}</li>
-      <li>Brand: {{ part.brand }}</li>
-      <li>Total Requests: {{ total_requests }}</li>
-      <li>Last Quota date: {% if last_quota_date %}{{ last_quota_date }}{% else %}N/A{% endif %}</li>
-      <li>Last Price: {% if last_price %}{{ last_price }}{% else %}N/A{% endif %}</li>
-    </ul>
-
-  {% if graph %}
-          <h2>Price Chart</h2>
-          <img src="data:image/png;base64,{{ graph }}" />
-      {% endif %}
-
-<div class="table-responsive-xxl">
-  <table class="table table-hover table table-bordered border-primary">
-  <tr>
-    <th>Кол-во</th>
-    <th>Цена</th>
-    <th>Дата</th>
-  </tr>
-  {% for item in quotas %}
-  <tr>
-    <td>{{ item.quantity }}</td>
-    <td>{{ item.price }}</td>
-    <td>{{ item.date }}</td>
-  </tr>
-      {% endfor %}
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6 col-md-6">
+        <div class="card">
+          <div class="card-header">График цен</div>
+          <div class="card-body">
+            <img src="data:image/png;base64,{{ price_chart_image }}" alt="Price Chart">
+          </div>
+        </div>
       </div>
+      <div class="col-sm-6 col-md-6">
+        <div class="card">
+          <div class="card-header">Graph 2</div>
+          <div class="card-body">
+            <img src="data:image/png;base64,{{ box_plot_image }}" alt="Price Chart">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6 col-md-6">
+        <div class="card">
+          <div class="card-header">Graph 3</div>
+          <div class="card-body">
+            <img src="data:image/png;base64,{{ bar_plot }}" alt="Price Chart">
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-6 col-md-6">
+        <div class="card">
+          <div class="card-header">Graph 4</div>
+          <div class="card-body">
+            <img src="data:image/png;base64,{{ bar_two }}" alt="Price Chart">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th colspan="2" class="text-center">Part Detail</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th>Series:</th>
+          <td>{{ part.series }}</td>
+        </tr>
+        <tr>
+          <th>Number:</th>
+          <td>{{ part.number }}</td>
+        </tr>
+        <tr>
+          <th>Brand:</th>
+          <td>{{ part.brand }}</td>
+        </tr>
+        <tr>
+          <th>Корпус:</th>
+          <td>{{ part.case_type }}</td>
+        </tr>
+        <tr>
+          <th>Вес брутто:</th>
+          <td>{{ part.package_weight }} g</td>
+        </tr>
+        <tr>
+          <th>Total Requests:</th>
+          <td>{{ total_requests }}</td>
+        </tr>
+        <tr>
+          <th>Last Quota date:</th>
+          <td>{% if last_quota_date %}{{ last_quota_date }}{% else %}N/A{% endif %}</td>
+        </tr>
+        <tr>
+          <th>Last Price:</th>
+          <td>{% if last_price %}{{ last_price }}{% else %}N/A{% endif %}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 {% endblock %}

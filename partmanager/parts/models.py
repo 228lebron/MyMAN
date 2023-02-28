@@ -1,24 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.timezone import timezone, timedelta
+from .constants import *
+from .choices import *
 
-USD_rate = 75
-air_shipping_cost = 5
-sea_shipping_cost = 1
-
-PACKAGE_WEIGHTS = {
-    'SOIC-8': 0.32,
-    'SOIC-14': 0.55,
-    'TO-92': 0.16,
-    'SOD-523': 0.3
-}
-
-CURRENCY_CHOICES = (
-        ('USD', 'Доллар'),
-        ('EUR', 'Евро'),
-        ('RUB', 'Рубль'),
-        # add more currency options here
-    )
 
 class Part(models.Model):
     series = models.CharField(max_length=100, verbose_name='Серия')
@@ -28,6 +13,8 @@ class Part(models.Model):
 
     def __str__(self):
         return f'{self.number} ({self.brand}) ({self.series}) ({self.case_type})'
+
+    @property
     def package_weight(self):
         return PACKAGE_WEIGHTS.get(self.case_type, 0)
 
@@ -55,13 +42,6 @@ class Quota(models.Model):
         verbose_name = "Квота"
         verbose_name_plural = "Квоты"
 class Request(models.Model):
-
-    STATUS_CHOICES = (
-        ('QUOTA', 'Есть квота'),
-        ('NO_QUOTA', 'Нет квоты'),
-        ('PAID', 'Оплачен'),
-        ('ORDERED', 'Заказан')
-    )
 
     part = models.ForeignKey(Part, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(verbose_name='Кол-во')

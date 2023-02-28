@@ -27,7 +27,7 @@ class RequestTable(tables.Table):
     customer_price_with_currency = tables.TemplateColumn('{{ record.customer_price }} {{ record.currency }}',
                                                          verbose_name='Цена клиенту')
     edit_button = tables.TemplateColumn(
-        '<a href="{% url "parts:attach_quota" record.id %}" class="btn btn-outline-success btn-xs">+</a>',
+        '<a href="{% url "parts:attach_quota" record.id %}" class="btn btn-outline-success btn-sm">+</a>',
         verbose_name='',
         orderable=False)
 
