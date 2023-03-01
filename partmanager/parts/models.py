@@ -70,8 +70,8 @@ class RequestQuotaResult(models.Model):
 
     def save(self, *args, **kwargs):
        if self.quota:
-           self.ruble_air_price = (self.quota.part.package_weight() * air_shipping_cost + float(self.quota.price)) * USD_rate
-           self.ruble_sea_price = (self.quota.part.package_weight() * sea_shipping_cost + float(self.quota.price)) * USD_rate
+           self.ruble_air_price = (self.quota.part.package_weight * air_shipping_cost + float(self.quota.price)) * USD_rate
+           self.ruble_sea_price = (self.quota.part.package_weight * sea_shipping_cost + float(self.quota.price)) * USD_rate
        super(RequestQuotaResult, self).save(*args, **kwargs)
 
     class Meta:

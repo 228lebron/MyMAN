@@ -155,6 +155,7 @@ class PartDetailView(LoginRequiredMixin, UserContextMixin, UserPassesTestMixin, 
         boxplot = get_box_plot(prices, 'Разброс цен')
         bar = get_bar(suppliers, prices, 'Сравнение цен у поставщиков', 'Цена USD', 'Поставщик')
         bar_two = get_bar(quantity, prices, 'Сравнение количества и цены', 'Цена USD', 'Кол-во шт.')
+        scatter = get_scatter(quantity, prices, 'Количества от поставщиков', 'Поставщик', 'Кол-во шт.')
 
         context['total_requests'] = total_requests
         context['last_price'] = last_price
@@ -163,6 +164,7 @@ class PartDetailView(LoginRequiredMixin, UserContextMixin, UserPassesTestMixin, 
         context['box_plot_image'] = boxplot
         context['bar_plot'] = bar
         context['bar_two'] = bar_two
+        context['scatter'] = scatter
         return context
 
 

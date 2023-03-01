@@ -1,10 +1,13 @@
 import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
 from matplotlib.cm import ScalarMappable
 from matplotlib.colors import Normalize
 import base64
 from io import BytesIO
 import openpyxl
 from .models import Quota, Part, Request, RequestQuotaResult
+import plotly.graph_objs as go
 
 def create_quotas_from_xlsx(file):
     wb = openpyxl.load_workbook(file)
@@ -78,5 +81,14 @@ def get_bar(x, y, title, ylabel, xlabel):
     graph = get_graph()
     return graph
 
-
+def get_scatter(x, y, title, xlabel, ylabel):
+    plt.switch_backend('AGG')
+    plt.figure(figsize=(9,5))
+    plt.title(title)
+    plt.scatter(x, y)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.tight_layout()
+    graph = get_graph()
+    return graph
 
