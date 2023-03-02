@@ -24,6 +24,23 @@ def create_quotas_from_xlsx(file):
                             lead_time=lead_time, date=date))
     Quota.objects.bulk_create(quotas)
 
+#def get_price_data(part):
+#    quotas = Quota.objects.filter(part=part)
+#    requests = Request.objects.filter(part=part)
+#    prices = []
+#    suppliers = []
+#    dates = []
+#    lead_times = []
+#    quantity = []
+#    for quota in quotas:
+#        prices.append(float(quota.price))
+#        dates.append(quota.date)
+#        suppliers.append(quota.supplier)
+#        lead_times.append(quota.lead_time)
+#        quantity.append(quota.quantity)
+#    return prices, dates, suppliers, lead_times, quantity
+
+
 def get_price_data(part):
     quotas = Quota.objects.filter(part=part)
     requests = Request.objects.filter(part=part)
@@ -32,7 +49,7 @@ def get_price_data(part):
     dates = []
     lead_times = []
     quantity = []
-    for quota in quotas:
+    for quota in sorted(quotas, key=lambda q: q.date):
         prices.append(float(quota.price))
         dates.append(quota.date)
         suppliers.append(quota.supplier)
@@ -53,10 +70,15 @@ def get_graph():
 def get_plot(x, y, title, xlabel, ylabel):
     plt.switch_backend('AGG')
     plt.figure(figsize=(9,5))
-    plt.title(title)
-    plt.plot(x, y)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
+    plt.style.use('seaborn-whitegrid')
+    plt.title(title, fontsize=16, fontweight='bold')
+    #plt.plot(x, y)
+    plt.plot(x, y, color='tab:blue', linewidth=2, marker='o', markersize=6, linestyle='--')
+    plt.legend(loc='best', fontsize=12)
+    plt.xlabel(xlabel, fontsize=14)
+    plt.ylabel(ylabel, fontsize=14)
+    plt.xticks(fontsize=8)
+    plt.yticks(fontsize=8)
     plt.tight_layout()
     graph = get_graph()
     return graph
