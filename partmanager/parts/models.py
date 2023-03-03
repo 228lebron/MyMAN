@@ -23,6 +23,18 @@ class Part(models.Model):
         verbose_name_plural = "Микросхемы"
 
 
+#class CompetitorPrice(models.Model):
+#    part = models.ForeignKey(Part, on_delete=models.CASCADE, related_name='competitor_prices')
+#    competitor_name = models.CharField(max_length=100, verbose_name='Конкурент')
+#    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена')
+#
+#    def __str__(self):
+#        return f'{self.part} - {self.competitor_name} ({self.price})'
+#    class Meta:
+#        verbose_name = "Цена конкурента"
+#        verbose_name_plural = "Цены конкурентов"
+
+
 class Quota(models.Model):
     part = models.ForeignKey(Part, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(verbose_name='Количество')
