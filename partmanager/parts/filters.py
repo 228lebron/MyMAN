@@ -7,6 +7,7 @@ class ReqFilter(django_filters.FilterSet):
     request__part__number = django_filters.CharFilter(lookup_expr='icontains', label='Part number')
     request__part__brand = django_filters.CharFilter(lookup_expr='icontains', label='Brand')
     request__customer = django_filters.CharFilter(lookup_expr='icontains', label='Клиент')
+    request__manager = django_filters.CharFilter(lookup_expr='icontains', label='Менеджер')
     request__date = django_filters.DateFromToRangeFilter(label='Date')
 
     class Meta:
