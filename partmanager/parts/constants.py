@@ -8,3 +8,14 @@ PACKAGE_WEIGHTS = {
     'TO-92': 0.16,
     'SOD-523': 0.3
 }
+
+# fix криво заполненых брендов
+brand_mapping = {
+    "AD": "Analog Devices",
+    "ADI": "Analog Devices",
+    "ANALOG DEVICES": "Analog Devices",
+    'TI': 'Texas Instruments',
+    'Texas': 'Texas Instruments',
+    'TEXAS': 'Texas Instruments',
+    # add more
+}

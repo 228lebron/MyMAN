@@ -148,10 +148,11 @@ class PartDetailView(LoginRequiredMixin, UserContextMixin, UserPassesTestMixin, 
         requests = Request.objects.filter(part=part)
         total_requests = requests.count()
         last_quota_date = quotas.order_by('date').last().date if quotas.exists() else None
-        last_price = quotas.last().price if quotas.exists() else None
+        last_price = quotas.order_by('date').last().price if quotas.exists() else None
 
         prices, dates, suppliers, lead_times, quantity = get_price_data(part)
-        chart = get_plot(dates, prices, 'График цен', 'Дата', 'Цена USD')
+        prices_d, dates_d, lead_times_d, quantity_d = get_price_data_d(part)
+        chart = get_plot(dates_d, prices_d, 'График цен', 'Дата', 'Цена USD')
         boxplot = get_box_plot(prices, 'Разброс цен')
         bar = get_bar(suppliers, prices, 'Сравнение цен у поставщиков', 'Цена USD', 'Поставщик')
         bar_two = get_bar(quantity, prices, 'Сравнение количества и цены', 'Цена USD', 'Кол-во шт.')
