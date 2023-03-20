@@ -24,10 +24,29 @@ def check_ic_series(ic):
 
 
 
+#def create_quotas_from_xlsx(file):
+#    wb = openpyxl.load_workbook(file)
+#    ws = wb.active
+#    quotas = []
+#    for row in ws.iter_rows(values_only=True):
+#        part_number, brand, quantity, price, datecode, lead_time, supplier, date = row
+#
+#        if brand in brand_mapping:
+#            brand = brand_mapping[brand]
+#
+#        try:
+#            part = Part.objects.filter(number=part_number, brand=brand).first()
+#        except Part.DoesNotExist:
+#            part_series = check_ic_series(part_number)
+#            part = Part.objects.create(number=part_number, series=part_series, brand=brand)
+#        quotas.append(Quota(part=part, quantity=quantity, price=price, datecode=datecode, supplier=supplier,
+#                            lead_time=lead_time, date=date))
+#    Quota.objects.bulk_create(quotas)
+
 def create_quotas_from_xlsx(file):
     wb = openpyxl.load_workbook(file)
     ws = wb.active
-    quotas = []
+
     for row in ws.iter_rows(values_only=True):
         part_number, brand, quantity, price, datecode, lead_time, supplier, date = row
 
@@ -35,13 +54,16 @@ def create_quotas_from_xlsx(file):
             brand = brand_mapping[brand]
 
         try:
-            part = Part.objects.get(number=part_number, brand=brand)
+            part = Part.objects.filter(number=part_number, brand=brand).first()
         except Part.DoesNotExist:
             part_series = check_ic_series(part_number)
             part = Part.objects.create(number=part_number, series=part_series, brand=brand)
-        quotas.append(Quota(part=part, quantity=quantity, price=price, datecode=datecode, supplier=supplier,
-                            lead_time=lead_time, date=date))
-    Quota.objects.bulk_create(quotas)
+
+        quota = Quota(part=part, quantity=quantity, price=price, datecode=datecode, supplier=supplier,
+                      lead_time=lead_time, date=date)
+        quota.save()
+
+
 
 #def get_price_data(part):
 #    quotas = Quota.objects.filter(part=part)
